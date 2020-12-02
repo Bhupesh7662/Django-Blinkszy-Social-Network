@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<br>
+{% include 'partials/_alerts.html' %}
+{% if request.user.is_authenticated %}
+<div class="block-content">
+    <h4>Hey! {{ request.user }} your are already logged in. Please go to home page to enjoy cool stuff :)</h4>
+</div>
+{% else %}
+<section class="my-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-12">
+                <div class="banner_content">
+                    <img src="{% static 'assets/images/banner.jpg' %}" alt="Main Banne Image" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-6 sm-6 col-12">
+                <div class="register_form_content">
+                    <h3>Login</h3>
+                    <form method='Post' action="{% url 'login' %}">
+                        {% csrf_token %}
+
+                        <div class="form-group my-4">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Username" name='username'
+                                required minlength="3">
+                        </div>
+
+                        <div class="form-group my-4">
+                            <label for="Password">Password</label>
+                            <input type="password" class="form-control" id="Password" placeholder="Password"
+                                name='password' required>
+                        </div>
+                        <button type="submit" class="btn btn-outline-success">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

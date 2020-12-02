@@ -1,0 +1,33 @@
+{% extends 'base_hot_or_not.html' %}
+{% load static %}
+
+{% block title %} Update Hot {% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if request.user.is_authenticated %}
+    {% if request.user.id == post.author.id %}
+    <div class="add-post_content mt-2">
+        <h3>Update Hotness <span style="font-size: 50px;">🔥</span></h3>
+        <hr>
+        <div class="form-group">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Update Hottiee" class="btn btn-outline-success">
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="else-content mt-5 text-center">
+        <h2 class="font-weight-bold font-style-capetalize">Page not found :(</h2>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="else-content mt-5 text-center">
+        <h2 class="font-weight-bold font-style-capetalize">Page not found :(</h2>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

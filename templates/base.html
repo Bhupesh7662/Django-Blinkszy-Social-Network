@@ -1,0 +1,130 @@
+{% load static %}
+<!Doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{% static 'assets/favicon/favilogo.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+
+    <title>{% block title %} Social Network {% endblock %}</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+        <a class="navbar-brand" {% if request.user.is_authenticated %} href="{% url 'home' %}" {% else %}
+            href="{% url 'register' %}" {% endif %}>Social Network</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            {% if request.user.is_authenticated %}
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item active mr-4">
+                    <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-house-user"></i><span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active mr-4">
+                    <a class="nav-link" href="{% url 'Hot_or_not_home' %}">
+                        <i class="fab fa-hotjar" style="color: orange;"></i></a>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="far fa-user-circle"></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'user_profile' user.username %}">{{ user.username }}
+                            (Profile)</a>
+                        <a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a>
+                        <a class="dropdown-item"
+                            href="javascript:{ document.getElementById('logout').submit() }">Logout</a>
+                        <form action="{% url 'logout' %}" method="POST" id="logout">
+                            {% csrf_token %}
+                            <input type="hidden">
+                        </form>
+                    </div>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" action="{% url 'search' %}" method="GET">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" name="username">
+                <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+                <button type="button" class="btn btn-outline-success ml-1" data-toggle="modal" data-target="#postmodel">
+                    Post
+                </button>
+            </form>
+            {% else %}
+            <form class="form-inline my-2 my-lg-0 ml-auto">
+                <a href="{% url 'register' %}" class="btn btn-outline-success my-2 mx-2 my-sm-0">Register</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-success my-2 my-sm-0">Login</a>
+            </form>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="modal fade" id="postmodel" tabindex="-1" role="dialog" aria-labelledby="postmodelLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="postmodelLabel">Show some cool Stuff :)</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'post' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="postimage">Post Image</label>
+                            <input type="file" class="form-control" id="postimage" name="postimage" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="caption">Caption</label>
+                            <textarea class="form-control" id="caption" name="caption" rows="10"
+                                placeholder="Let's Rock" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-outline-success">Lets Show</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {% block content %} {% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js"></script>
+    <script src="https://unpkg.com/tilt.js@1.2.1/dest/tilt.jquery.min.js"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            jQuery.validator.addMethod("noSpace", function (value, element) {
+                return value.indexOf(" ") < 0 && value != "";
+            }, "Spaces are not allowed");
+    
+            $("#registartion-form").validate({
+                rules: {
+                    username: {
+                        noSpace: true
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

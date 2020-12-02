@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %} Social Network | Hot Detail {% endblock %}
+
+{% block content %}
+<br>
+{% if request.user.is_authenticated %}
+<div class="container">
+    <div class="card mb-4" id="{{ post.id }}" style="max-width: 80%; border-radius: 5px;">
+        <div class="card-header">
+            <div class="user_pic d-flex align-items-center">
+                &nbsp;<a href="{% url 'user_profile' post.user %}">{{ post.user.username }}</a>,
+                {{ post.created_date|timesince }} ago
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                <img src="{{ post.postimage.url }}" alt="post Image" class="img-fluid">
+            </h5>
+            <div class="post_content-btn my-2">
+                <a href="{% url 'post_details' post.pk %}" role="button" class="btn btn-light"><i
+                        class="far fa-comments"></i></a>
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                {% if request.user == post.user %}
+                <div class="delete-btn mt-1" style="float: right;  font-size: 20px;">
+                    <a href="{% url 'update_post' post.id %}" style="font-size: 15px;"><i class="far fa-edit"></i></a>
+                    &nbsp;
+                    <a role="button" class="delete" href="{% url 'post_delete' post.pk %}"><i class="far fa-trash-alt"
+                            style="color: red;"></i></a>
+                </div>
+                {% endif %}
+            </div>
+            <p class="card-text mt-2">{{ post.caption }}</p>
+        </div>
+    </div>
+    <br>
+</div>
+<div class="container">
+
+    <h3>Comments</h3>
+    <hr>
+    {% if not post.post_comments.all %}
+    No Comments -<a href="{% url 'add_post_comment' post.pk %}" class="btn btn-light">Add Comment</a>
+    {% else %}
+    <a href="{% url 'add_post_comment' post.pk %}" class="btn btn-light">Add Comment</a><br><br>
+    {% for comment in post.post_comments.all %}
+    <div class="post_comment" id="comment_{{ comment.id }}">
+        <strong>{{ comment.name }} </strong> - <span class="text-muted">{{ comment.created_date|timesince }}
+            ago</span><br>
+        {{ comment.Post_Comment|capfirst|safe }}
+        {% if request.user == post.user %}
+        <a role="button" class="delete" onclick="delete_comment_data({{ comment.id }})" value="{{ comment.id }}"
+            style="float: right; font-size: 20px;">
+            <i class="far fa-trash-alt" style="color: red;"></i>
+        </a>
+        {% endif %}
+    </div>
+
+    <hr>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

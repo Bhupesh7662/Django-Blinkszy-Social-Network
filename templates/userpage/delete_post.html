@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Update Post {% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if request.user.is_authenticated %}
+    <div class="add-post_content mt-2">
+        <h3>Delete Post</h3>
+        <br>
+        <div class="container">
+            <h5 class="card-title" >
+                <img src="{{ post.postimage.url }}" alt="post Image" class="img-fluid" style="width: 50rem;">
+            </h5>
+            <div class="post_content-btn my-2">
+                <a href="{% url 'post_details' post.pk %}" role="button" class="btn btn-light"><i
+                        class="far fa-comments"></i></a>
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+            </div>
+            <p class="card-text mt-2">{{ post.caption }}</p>
+        </div>
+        <hr>
+        <div class="form-group">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="submit" value="Delete" class="btn btn-outline-success">
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="else-content mt-5 text-center">
+        <h2 class="font-weight-bold font-style-capetalize">Page not found :(</h2>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

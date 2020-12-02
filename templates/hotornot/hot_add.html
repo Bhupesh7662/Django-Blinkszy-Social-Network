@@ -1,0 +1,27 @@
+{% extends 'base_hot_or_not.html' %}
+{% load static %}
+{% block title %} Add Hot {% endblock %}
+
+{% block content %}
+<div class="container">
+    <br>
+    {% if request.user.is_authenticated %}
+    <div class="add_hot-content">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <br>
+            <input type="submit" value="Add Hottiee" class="btn btn-outline-success">
+        </form>
+    </div>
+    {% else %}
+    <div class="else-content">
+        <p class="text-center">Opps! Page not found :( 😥</p>
+    </div>
+    {% endif %}
+</div>
+<script>
+    var user_id = '{{ user.id }}'
+    document.getElementById('user_id').value = user_id;
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Add Comments {% endblock %}
+
+{% block content %}
+<div class="container">
+    <br>
+    {% if request.user.is_authenticated %}
+    <div class="add_hot-content">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="username" value="{{ user.username }}">
+            {{ form.as_p }}
+            <br>
+            <input type="submit" value="Add Comment" class="btn btn-outline-success">
+        </form>
+    </div>
+    {% else %}
+    <div class="else-content">
+        <p class="text-center">Opps! Page not found :( 😥</p>
+    </div>
+    {% endif %}
+</div>
+<script>
+    var id_name = '{{ user.username }}'
+    document.getElementById('id_name').value = id_name;
+</script>
+{% endblock %}

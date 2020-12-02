@@ -1,0 +1,44 @@
+{% extends 'base_hot_or_not.html' %}
+{% load static %}
+{% block title %} SocialNetwork | Hot or Not {% endblock %}
+{% block content %}
+
+<div class="container">
+    <br>
+
+    {% if object_list %}
+    {% for post in object_list %}
+    <div class="card mb-4" id="{{ post.id }}" style="max-width: 80%; border-radius: 5px;">
+        <div class="card-header">
+            <div class="user_pic d-flex align-items-center">
+                &nbsp;<a href="{% url 'user_profile' post.author %}">{{ post.author.username }}</a>,
+                {{ post.created_date|timesince }} ago
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                <img src="{{ post.hotimage.url }}" alt="post Image" class="img-fluid">
+            </h5>
+            <div class="hot_content-btn my-2">
+                <a href="{% url 'hot_detail' post.pk %}" role="button" class="btn btn-light"><i
+                        class="far fa-comments"></i></a>
+                {% if request.user == post.author %}
+                {% if user.id == post.author.id %}
+                <div class="delete-btn mt-1" style="float: right; font-size: 20px;">
+                    <a href="{% url 'update_hot' post.pk %}" style="font-size: 15px;"><i class="far fa-edit"></i></a>
+                    &nbsp;
+                    <a role="button" class="delete" onclick="delete_hot_data({{ post.id }})"><i class="far fa-trash-alt"
+                            style="color: red;"></i></a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            <p class="card-text mt-2">{{ post.hotcaption | truncatechars:100 }}</p>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-center font-weight-bold mt-5">No user has posted some hotness yet 🔥.</p>
+    {% endif %}
+</div>
+{% endblock %}

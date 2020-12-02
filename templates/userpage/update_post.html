@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Update Post {% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if request.user.is_authenticated %}
+    <div class="add-post_content mt-2">
+        <h3>Update Post</h3>
+        <hr>
+        <div class="form-group">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Update" class="btn btn-outline-success">
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="else-content mt-5 text-center">
+        <h2 class="font-weight-bold font-style-capetalize">Page not found :(</h2>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

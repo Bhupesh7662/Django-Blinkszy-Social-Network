@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}@{{ user.username }} | Feeds {% endblock %}
+{% block content %}
+{% if request.user.is_authenticated %}
+<br>
+{% include 'partials/_alerts.html' %}
+<section class="userpage_section">
+    <div class="container">
+        {% if post %}
+        {% for i in post %}
+        <div class="card mb-4" id="{{ i.id }}" style="max-width: 80%; border-radius: 5px;">
+            <div class="card-header">
+                <div class="user_pic d-flex align-items-center">
+                    &nbsp;<a href="{% url 'user_profile' i.user %}">{{ i.user.username}}</a>,
+                    {{ i.created_date|timesince }} ago
+                </div>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    <img src="{{ i.postimage.url }}" alt="Post Image" class="img-fluid">
+                </h5>
+                <input type="hidden" name="post_id" value="{{ i.id }}">
+                <div class="post_content-btn my-2">
+                    <button class="btn btn-light mr-3 like" id="{{ i.id }}">
+                        {% if i in liked_post %}
+                        <a href="{% url 'like_dislike_post' i.id %}" class="btn-red" id="likebtn{{ i.id }}">
+                            ❤
+                        </a> {{ i.count }}
+                        {% else %}
+                        <a href="{% url 'like_dislike_post' i.id %}" id="likebtn{{ i.id }}" class="btn-red"
+                            style="color: red;">like</a>
+                        {% endif %}
+                    </button>
+                    <a href="{% url 'post_details' i.pk %}" role="button" class="btn btn-light"><i class="far fa-comments"></i></a>
+                    {% if request.user == i.user %}
+                    <div class="delete-btn mt-1" style="float: right;  font-size: 20px;">
+                        <a href="{% url 'update_post' i.id %}" style="font-size: 15px;"><i class="far fa-edit"></i></a>
+                        &nbsp;
+                        <a role="button" class="delete" onclick="delete_data({{ i.id }})"><i class="far fa-trash-alt"
+                                style="color: red;"></i></a>
+                    </div>
+                    {% endif %}
+                </div>
+                <p class="card-text mt-2">{{ i.caption | truncatechars:100 }}</p>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center font-weight-bold mt-5">No user has posted yet or you have not followed any one yet ❤</p>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="block-content">
+        <h4>Please login or create account to enjoy awesome stuff :) </h4>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

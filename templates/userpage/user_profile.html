@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ user.first_name }} @{{ user.username }}{% endblock %}
+{% block content %}
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-12">
+            <div class="userprofile_image text-center">
+                <img src="{{ user_img.url }}" alt="User Profile Image" class="align-self-start img-fluid userimage">
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-6 col-12 mt-4">
+            <h4 class="mb-4">@{{ user_data.username }}
+                {% if follow_connection and not request.user ==  user_data %}
+                <a href="{% url 'follow' user_data.username %}" role="button" class="btn btn-outline-primary follow"
+                    id="follow"><b>&#10003; Following</b></a>
+
+                {% elif not follow_connection and not request.user ==  user_data %}
+                <a href="{% url 'follow' user_data.username %}" role="button" class="btn btn-outline-primary follow"
+                    id="follow">+ Follow</a>
+                {% endif %}
+            </h4>
+            <div class="following-content d-flex align-items-center">
+                <p>
+                    <span class="font-weight-bold">{{ follower }}</span> Followers &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span class="font-weight-bold">{{ following }}</span> Following
+                    <br>
+
+                    {% if connection %}
+                    <br>
+                    <a href="{{ connection }}">
+                        <span class="font-weight-bold">Connections: </span> {{ connection }}
+                    </a>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="user_bio_content">
+                <p class="font-weight-bold">{{ user_data.first_name }} {{ user_data.last_name }}</p>
+                <div class="description">
+                    <span class="d-block"><b>{{ bio }}</b></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>
+
+<div class="container">
+    {% if posts %}
+    <div class="row">
+        {% for i in posts %}
+        {% for j in i %}
+        <div class="col-md-4 col-sm-4 col-4 py-2">
+            <a href="{% url 'post_details' j.pk %}">
+                <div class="user_post_content">
+                    <img src="{{ j.postimage.url }}" class="img-fluid profile-post-image" alt="Post Image" data-tilt>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center font-weight-bold mt-5">You have not made any post yet ❤</p>
+    {% endif %}
+</div>
+{% endblock %}

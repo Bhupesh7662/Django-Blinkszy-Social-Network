@@ -1,0 +1,69 @@
+{% extends 'base_hot_or_not.html' %}
+{% block title %} Social Network | Hot Detail {% endblock %}
+
+{% block content %}
+<br>
+{% if request.user.is_authenticated %}
+<div class="container">
+    <div class="card mb-4" id="{{ post.id }}" style="max-width: 80%; border-radius: 5px;">
+        <div class="card-header">
+            <div class="user_pic d-flex align-items-center">
+                &nbsp;<a href="{% url 'user_profile' post.author %}">{{ post.author.username }}</a>,
+                {{ post.created_date|timesince }} ago
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                <img src="{{ post.hotimage.url }}" alt="post Image" class="img-fluid">
+            </h5>
+            <div class="hot_content-btn my-2">
+                {% if request.user.is_authenticated %}
+                <form action="{% url 'like_hot' post.pk %}" method="POST">
+                    {% csrf_token %}
+                    {% if liked %}
+                    <button href="{% url 'like_hot' post.pk %}" class="btn btn-light" name="post_id" type="submit"
+                        value="{{ post.id }}"><b>Hotiee</b></button>
+                    {% else %}
+                    <button href="{% url 'like_hot' post.pk %}" class="btn btn-light" name="post_id" type="submit"
+                        value="{{ post.id }}">🔥</button>
+                    {% endif %}
+                    <b><i>- {{ total_likes }} Hotness</i></b>
+                    {% endif %}
+                </form>
+                {% if request.user == post.author %}
+                {% if user.id == post.author.id %}
+                <div class="delete-btn mt-1" style="float: right; font-size: 20px;">
+                    <a href="{% url 'update_hot' post.id %}" style="font-size: 15px;"><i class="far fa-edit"></i></a>
+                    &nbsp;
+                    <a role="button" class="delete" href="{% url 'delete_hot' post.pk %}"><i class="far fa-trash-alt"
+                            style="color: red;"></i></a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            <p class="card-text mt-2">{{ post.hotcaption | truncatechars:100 }}</p>
+        </div>
+    </div>
+    <br>
+    <h3>Comments</h3>
+    <hr>
+    {% if not post.comments.all %}
+    No Comments - <a href="{% url 'add_comment' post.pk %}" class="btn btn-light">Add Comment</a>
+    {% else %}
+    <a href="{% url 'add_comment' post.pk %}" class="btn btn-light">Add Comment</a><br><br>
+    {% for comment in post.comments.all %}
+    <div class="hot-comments" id="comment_{{ comment.id }}">
+        <strong>{{ comment.name }} - {{ comment.created_date|timesince }} ago</strong><br>
+        {{ comment.body|capfirst|safe }}
+        <a role="button" class="delete" onclick="delete_hot_comment_data({{ comment.id }})" value="{{ comment.id }}"
+            style="float: right; font-size: 20px;">
+            <i class="far fa-trash-alt" style="color: red;"></i>
+        </a>
+    </div>
+    <hr>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

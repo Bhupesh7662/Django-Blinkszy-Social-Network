@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Search {% endblock %}
+{% block content %}
+
+
+<div class="container">
+    <br>
+    <div class="row">
+        {% if object_list %}
+        {% for i in object_list %}
+        <div class="col-md-4 col-6">
+            <div class="card-block my-1 bg-light border-0" data-tilt>
+                <div class="search-box">
+                    <div class="card-body">
+                        <a href="{% url 'user_profile' i.username  %}">
+                            <p class="card-title font-weight-bold">@{{ i.username }}</p>
+                        </a>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ i.first_name }} {{ i.last_name }}</h6>
+                        <a type="button" name="button" class="btn btn-outline-danger view_btn" role="button"
+                            href="{% url 'user_profile' i.username  %}">View profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <h1>No Search Results</h1>
+
+    {% endif %}
+
+    <!-- For Pagination -->
+    <!-- {% if is_paginated %}
+    <a href="?page=1" role="button" class="btn btn-outline-primary">First</a>
+
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" role="button"
+        class="btn btn-outline-primary">{{ page_obj.previous_page_number }}</a>
+    {% endif %}
+
+    {% if page_obj.number != 1 %}
+    <a href="?page={{ page_obj.number }}" class="btn btn-primary">{{ page_obj.number }}</a>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" role="button"
+        class="btn btn-outline-primary">{{ page_obj.next_page_number }}</a>
+    {% endif %}
+
+    {% endif %} -->
+
+
+</div>
+
+{% endblock %}
